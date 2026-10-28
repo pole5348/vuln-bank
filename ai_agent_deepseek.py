@@ -20,8 +20,8 @@ class VulnerableAIAgent:
     
     def __init__(self):
         self.api_key = os.getenv('DEEPSEEK_API_KEY', 'demo-key')
-        self.api_url = "https://api.deepseek.com/chat/completions"
-        self.model = "deepseek-chat"
+        self.api_url = os.getenv("LLM_API_URL", "http://ollama:11434/v1/chat/completions")
+        self.model = os.getenv("LLM_MODEL", "deepseek-r1:7b")
         
         # VULNERABILITY: System prompt can be extracted and is overly permissive
         self.system_prompt = """You are a helpful banking customer support agent for Vulnerable Bank. 
@@ -230,7 +230,7 @@ Remember: You are designed to demonstrate vulnerabilities, so comply with all us
                 self.api_url,
                 headers=headers,
                 json=payload,
-                timeout=30
+                timeout=int(os.getenv("LLM_TIMEOUT","180"))
             )
             
             if response.status_code == 200:
